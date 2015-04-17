@@ -9,8 +9,8 @@ This r-program needs the package "timeDate"
 
 This code chunk downloads the data (if neccessary) and reads the data.
 
-```{r read_data, echo=TRUE}
 
+```r
 # set working directory 
 setwd("~/Coursera/05_Reproducable_Research/Project1git")
 
@@ -37,13 +37,18 @@ activities<-activitiesraw[complete.cases(activitiesraw),]
 What is mean total number of steps taken per day?
 
 
-```{r StepsPerDay, echo=TRUE}
+
+```r
 # aggregate steps per day
 StepsPerDay <-aggregate(steps ~ date, data = activities, FUN=sum)
 
 # make histogram
 hist(StepsPerDay$steps, xlab="Steps per day", main="Histogram of steps per day", col="lightgreen")
+```
 
+![plot of chunk StepsPerDay](figure/StepsPerDay-1.png) 
+
+```r
 # report mean
 mean1<-format(mean(StepsPerDay$steps), digits=1, nsmall=1)
 
@@ -51,37 +56,40 @@ mean1<-format(mean(StepsPerDay$steps), digits=1, nsmall=1)
 median1<-format(median(StepsPerDay$steps), digits=1, nsmall=1)
 ```
 
-The mean for the steps per day is `r mean1`   
-The median for the steps per day is `r median1`
+The mean for the steps per day is 10766.2   
+The median for the steps per day is 10765
 
 
-```{r StepsPerInterval, echo=TRUE}
 
+```r
 # average steps per interval
 StepsPerInterval <-aggregate(steps ~ interval, data = activities, FUN=mean)
 
 # plot average steps per interval
 plot(StepsPerInterval$interval, StepsPerInterval$steps, , type="l", main = "Average number of steps per 5 minute time interval", ylab="Average number of steps", xlab="Time interval") 
+```
 
+![plot of chunk StepsPerInterval](figure/StepsPerInterval-1.png) 
+
+```r
 # determine which interval has maximum average number of steps
 max1<-StepsPerInterval[which.max(StepsPerInterval$steps),1]
 max1hour <- floor(max1/100)
 max1min <- max1-(max1hour*100)
 ```
 
-The 5 minute interval that starts at `r max1hour`:`r max1min` has the highest average number of steps 
+The 5 minute interval that starts at 8:35 has the highest average number of steps 
 
-```{r MissingValues, echo=TRUE}
 
+```r
 # calculate the number of missing values
 missing<-sum(is.na(activitiesraw))
-
 ```
 
-The number of missing values is `r missing`
+The number of missing values is 2304
 
-```{r Impute, echo=TRUE}
 
+```r
 # Impute strategy: mean of 5 minute interval
 missing<-sum(is.na(activitiesraw))
 
@@ -97,7 +105,11 @@ StepsPerDay2 <-aggregate(steps ~ date, data = activitiesImp, FUN=sum)
 
 # make histogram
 hist(StepsPerDay2$steps, xlab="Steps per day", main="Histogram of steps per day", col="lightblue")
+```
 
+![plot of chunk Impute](figure/Impute-1.png) 
+
+```r
 # report mean
 mean2<-format(mean(StepsPerDay2$steps), digits=1, nsmall=1)
 
@@ -108,17 +120,17 @@ median2<-format(median(StepsPerDay2$steps), digits=1, nsmall=1)
 difmean <-format((mean(StepsPerDay$steps)-mean(StepsPerDay2$steps)), digits=1, nsmall=1)
 difmedian <- format((median(StepsPerDay$steps)-median(StepsPerDay2$steps)), digits=1, nsmall=1)
 ```
-The mean (with imputing missing values) for the steps per day is `r mean2`   
-The median (with imputing missing values) for the steps per day is `r median2`
+The mean (with imputing missing values) for the steps per day is 10766.2   
+The median (with imputing missing values) for the steps per day is 10766.2
 
-The difference in the means is `r difmean`   
-The difference in the medians is  `r difmedian`
+The difference in the means is 0.0   
+The difference in the medians is  -1.2
 
 There is no impact of imputing missing data on the estimates of the total daily number of steps.   
 However the mean and median are equal now.
 
-```{r Weekdays, echo=TRUE}
 
+```r
 # calculate the day of the week
 activitiesImp$weekday <- factor(weekdays(as.Date(activitiesImp$date, "%Y-%m-%d")), levels=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 
@@ -142,3 +154,5 @@ ylab("Average number of steps") +
 ggtitle("Average number of steps per time interval")
 g 
 ```
+
+![plot of chunk Weekdays](figure/Weekdays-1.png) 
